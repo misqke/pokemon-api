@@ -6,6 +6,9 @@ const app = express();
 
 app.use(express.json());
 
+app.use("/", (req, res) => {
+  res.status(200).json({ msg: "home" });
+});
 app.use("/api", getPokemon);
 
 const port = process.env.PORT || 8000;
