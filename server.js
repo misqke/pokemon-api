@@ -5,10 +5,8 @@ const getPokemon = require("./pokemonController");
 const app = express();
 
 app.use(express.json());
+app.use(express.static("public"));
 
-app.get("/", (req, res) => {
-  res.status(200).json({ msg: "home" });
-});
 app.get("/api", getPokemon);
 
 const port = process.env.PORT || 8000;
