@@ -6,7 +6,7 @@ const app = express();
 
 app.use(express.json());
 
-app.use("/", getPokemon);
+app.use("/api", getPokemon);
 
 const port = process.env.PORT || 8000;
 

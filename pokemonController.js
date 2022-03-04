@@ -18,16 +18,18 @@ const getPokemon = (req, res) => {
         }
         if (exactType === true) {
           let exact = true;
-          for (let j = 0; j < typeArr.length; j++) {
-            let capType = typeArr[j];
-            let firstLetter = capType[0].toUpperCase();
-            if (!pokemon[i].type.includes(firstLetter + capType.slice(1))) {
-              exact = false;
-              break;
+          if (pokemon[i].type.length === typeArr.length) {
+            for (let j = 0; j < typeArr.length; j++) {
+              let capType = typeArr[j];
+              let firstLetter = capType[0].toUpperCase();
+              if (!pokemon[i].type.includes(firstLetter + capType.slice(1))) {
+                exact = false;
+                break;
+              }
             }
-          }
-          if (exact) {
-            data.push(pokemon[i]);
+            if (exact) {
+              data.push(pokemon[i]);
+            }
           }
           exact = true;
         }
