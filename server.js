@@ -1,7 +1,12 @@
 require("dotenv").config();
 const express = require("express");
+const getPokemon = require("./pokemonController");
 
 const app = express();
+
+app.use(express.json());
+
+app.use("/", getPokemon);
 
 const port = process.env.PORT || 8000;
 
