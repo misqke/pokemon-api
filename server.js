@@ -1,13 +1,14 @@
 require("dotenv").config();
 const express = require("express");
-const getPokemon = require("./pokemonController");
+const { searchPokemon, advancedSearchPokemon } = require("./pokemonController");
 
 const app = express();
 
 app.use(express.json());
 app.use(express.static("public"));
 
-app.get("/api", getPokemon);
+app.get("/api", searchPokemon);
+app.post("/api", advancedSearchPokemon);
 
 const port = process.env.PORT || 8000;
 
