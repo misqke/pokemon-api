@@ -2,11 +2,18 @@ const pokemon = require("./pokemon.json");
 
 const searchPokemon = (req, res) => {
   const { search } = req.query;
+  const page = Number(req.query.page) || 1;
+  const limit = 12;
+  const skip = (page - 1) * limit;
+
   let data = [];
   try {
     if (search) {
       if (Number(search)) {
-        const poke = pokemon.filter((pok) => pok.number === Number(search));
+        const reg = new RegExp(search, "g");
+        const poke = pokemon.filter(
+          (pok) => pok.number.toString().search(reg) !== -1
+        );
         data.push(...poke);
       } else {
         const reg = new RegExp(search, "g");
@@ -15,9 +22,13 @@ const searchPokemon = (req, res) => {
         );
         data.push(...poke);
       }
+    } else {
+      data = pokemon;
     }
+    const pages = Math.ceil(data.length / limit);
+    data = data.slice(skip, skip + limit);
 
-    res.status(200).json(data);
+    res.status(200).json({ pages, data });
   } catch (error) {
     console.log(error);
     res.json(error);
@@ -28,6 +39,9 @@ const advancedSearchPokemon = (req, res) => {
   const { type, weaknesses, ability, heights, weights } = req.body;
   const minNum = Number(req.body.minNum) || 1;
   const maxNum = Number(req.body.maxNum) || pokemon.length;
+  const page = Number(req.query.page) || 1;
+  const limit = 12;
+  const skip = (page - 1) * limit;
   try {
     let data = pokemon;
     // filter by number range
