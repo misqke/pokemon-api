@@ -25,10 +25,16 @@ const searchPokemon = (req, res) => {
 };
 
 const advancedSearchPokemon = (req, res) => {
-  const { type, weaknesses, ability, minNum, maxNum, height, weight } =
-    req.body;
+  const { type, weaknesses, ability, heights, weights } = req.body;
+  const minNum = Number(req.body.minNum) || 1;
+  const maxNum = Number(req.body.maxNum) || pokemon.length;
   try {
     let data = pokemon;
+    // filter by number range
+    if (minNum > 1 || maxNum < pokemon.length) {
+      const numFilteredData = data.slice(minNum - 1, maxNum);
+      data = numFilteredData;
+    }
     // filter for type match
     if (type) {
       const typeFilteredData = [];
@@ -81,6 +87,54 @@ const advancedSearchPokemon = (req, res) => {
           return false;
         }
       });
+    }
+
+    // filter by heights
+    if (heights && heights.length < 3) {
+      const heightFilteredData = [];
+      data.forEach((pokemon) => {
+        const pokemonHeight = Number(pokemon.info[0].value.split("'")[0]);
+        if (heights.includes("small")) {
+          if (pokemonHeight < 4) {
+            heightFilteredData.push(pokemon);
+          }
+        }
+        if (heights.includes("medium")) {
+          if (pokemonHeight < 7 && pokemonHeight >= 4) {
+            heightFilteredData.push(pokemon);
+          }
+        }
+        if (heights.includes("large")) {
+          if (pokemonHeight >= 7) {
+            heightFilteredData.push(pokemon);
+          }
+        }
+      });
+      data = heightFilteredData;
+    }
+
+    // filter by weights
+    if (weights && weights.length < 3) {
+      const weightFilteredData = [];
+      data.forEach((pokemon) => {
+        const pokemonWeight = Number(pokemon.info[1].value.split(" ")[0]);
+        if (weights.includes("small")) {
+          if (pokemonWeight < 90) {
+            weightFilteredData.push(pokemon);
+          }
+        }
+        if (weights.includes("medium")) {
+          if (pokemonWeight < 500 && pokemonWeight >= 90) {
+            weightFilteredData.push(pokemon);
+          }
+        }
+        if (weights.includes("large")) {
+          if (pokemonWeight >= 500) {
+            weightFilteredData.push(pokemon);
+          }
+        }
+      });
+      data = weightFilteredData;
     }
 
     res.status(200).json(data);
