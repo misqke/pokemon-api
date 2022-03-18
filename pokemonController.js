@@ -36,7 +36,7 @@ const searchPokemon = (req, res) => {
 };
 
 const advancedSearchPokemon = (req, res) => {
-  const { type, weaknesses, ability, heights, weights } = req.body;
+  const { types, weaknesses, ability, heights, weights } = req.body;
   const minNum = Number(req.body.minNum) || 1;
   const maxNum = Number(req.body.maxNum) || pokemon.length;
   const page = Number(req.query.page) || 1;
@@ -50,19 +50,17 @@ const advancedSearchPokemon = (req, res) => {
       data = numFilteredData;
     }
     // filter for type match
-    if (type) {
+    if (types) {
       const typeFilteredData = [];
       data.forEach((pokemon) => {
         let matchedTypes = 0;
-        if (pokemon.type.length === type.length) {
-          pokemon.type.forEach((pokemonType) => {
-            if (type.includes(pokemonType)) {
-              matchedTypes++;
-            }
-          });
-          if (matchedTypes === type.length) {
-            typeFilteredData.push(pokemon);
+        pokemon.type.forEach((pokemonType) => {
+          if (types.includes(pokemonType)) {
+            matchedTypes++;
           }
+        });
+        if (matchedTypes === types.length) {
+          typeFilteredData.push(pokemon);
         }
       });
       data = typeFilteredData;
@@ -151,7 +149,9 @@ const advancedSearchPokemon = (req, res) => {
       data = weightFilteredData;
     }
 
-    res.status(200).json(data);
+    const pages = Math.ceil(data.length / limit);
+    data = data.slice(skip, skip + limit);
+    res.status(200).json({ pages, data });
   } catch (error) {
     console.log(error);
     res.json(error);
