@@ -1,34 +1,10 @@
 const pokemon = require("./pokemon.json");
 
-const searchPokemon = (req, res) => {
-  const { search } = req.query;
-  const page = Number(req.query.page) || 1;
-  const limit = 12;
-  const skip = (page - 1) * limit;
-
-  let data = [];
+const getSinglePokemon = (req, res) => {
+  const num = Number(req.query.num) || 1;
   try {
-    if (search) {
-      if (Number(search)) {
-        const reg = new RegExp(search, "g");
-        const poke = pokemon.filter(
-          (pok) => pok.number.toString().search(reg) !== -1
-        );
-        data.push(...poke);
-      } else {
-        const reg = new RegExp(search, "g");
-        const poke = pokemon.filter(
-          (pok) => pok.name.toLowerCase().search(reg) !== -1
-        );
-        data.push(...poke);
-      }
-    } else {
-      data = pokemon;
-    }
-    const pages = Math.ceil(data.length / limit);
-    data = data.slice(skip, skip + limit);
-
-    res.status(200).json({ pages, data });
+    const requestedPokemon = pokemon[num - 1];
+    res.status(200).json({ data: requestedPokemon });
   } catch (error) {
     console.log(error);
     res.json(error);
@@ -36,14 +12,28 @@ const searchPokemon = (req, res) => {
 };
 
 const advancedSearchPokemon = (req, res) => {
-  const { types, weaknesses, ability, heights, weights } = req.body;
+  const { search, types, weaknesses, ability, heights, weights } = req.body;
   const minNum = Number(req.body.minNum) || 1;
   const maxNum = Number(req.body.maxNum) || pokemon.length;
   const page = Number(req.query.page) || 1;
+  const sortBy = req.query.sort || "01";
   const limit = 12;
   const skip = (page - 1) * limit;
   try {
     let data = pokemon;
+    // filter for search
+    if (search) {
+      if (Number(search)) {
+        const reg = new RegExp(search, "i");
+        data = data.filter(
+          (pokemon) => pokemon.number.toString().search(reg) !== -1
+        );
+      } else {
+        const reg = new RegExp(search, "i");
+        data = data.filter((pokemon) => pokemon.name.search(reg) !== -1);
+      }
+    }
+
     // filter by number range
     if (minNum > 1 || maxNum < pokemon.length) {
       const numFilteredData = data.slice(minNum - 1, maxNum);
@@ -149,6 +139,35 @@ const advancedSearchPokemon = (req, res) => {
       data = weightFilteredData;
     }
 
+    if (sortBy !== "01") {
+      const sortedData = [];
+      if (sortBy === "10") {
+        for (let i = data.length - 1; i >= 0; i--) {
+          sortedData.push(data[i]);
+        }
+        data = sortedData;
+      } else if (sortBy === "az" || sortBy === "za") {
+        const dataToSort = [...data];
+        dataToSort.sort((a, b) => {
+          if (a.name > b.name) {
+            return 1;
+          } else if (a.name < b.name) {
+            return -1;
+          } else {
+            return 0;
+          }
+        });
+        if (sortBy === "za") {
+          for (let i = data.length - 1; i >= 0; i--) {
+            sortedData.push(dataToSort[i]);
+          }
+          data = sortedData;
+        } else {
+          data = dataToSort;
+        }
+      }
+    }
+
     const pages = Math.ceil(data.length / limit);
     data = data.slice(skip, skip + limit);
     res.status(200).json({ pages, data });
@@ -158,4 +177,27 @@ const advancedSearchPokemon = (req, res) => {
   }
 };
 
-module.exports = { searchPokemon, advancedSearchPokemon };
+const randomPokemon = (req, res) => {
+  const currentPokemon = req.body.pokemon;
+  const limit = req.query.limit || 12;
+  try {
+    const newPokemon = [];
+    const newPokemonNames = [];
+    while (newPokemon.length < limit) {
+      const randomIndex = Math.floor(Math.random() * pokemon.length);
+      if (
+        !currentPokemon.includes(pokemon[randomIndex].name) &&
+        !newPokemonNames.includes(pokemon[randomIndex].name)
+      ) {
+        newPokemon.push(pokemon[randomIndex]);
+        newPokemonNames.push(pokemon[randomIndex].name);
+      }
+    }
+    res.status(200).json({ data: newPokemon });
+  } catch (error) {
+    console.log(error);
+    res.json(error);
+  }
+};
+
+module.exports = { getSinglePokemon, advancedSearchPokemon, randomPokemon };
