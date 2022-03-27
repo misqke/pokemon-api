@@ -180,17 +180,20 @@ const advancedSearchPokemon = (req, res) => {
 const randomPokemon = (req, res) => {
   const currentPokemon = req.body.pokemon;
   const limit = req.query.limit || 12;
+  const minNum = Number(req.query.minNum) || 1;
+  const maxNum = Number(req.query.maxNum) || 898;
   try {
+    const availablePokemon = pokemon.slice(minNum - 1, maxNum);
     const newPokemon = [];
     const newPokemonNames = [];
     while (newPokemon.length < limit) {
-      const randomIndex = Math.floor(Math.random() * pokemon.length);
+      const randomIndex = Math.floor(Math.random() * availablePokemon.length);
       if (
-        !currentPokemon.includes(pokemon[randomIndex].name) &&
-        !newPokemonNames.includes(pokemon[randomIndex].name)
+        !currentPokemon.includes(availablePokemon[randomIndex].name) &&
+        !newPokemonNames.includes(availablePokemon[randomIndex].name)
       ) {
-        newPokemon.push(pokemon[randomIndex]);
-        newPokemonNames.push(pokemon[randomIndex].name);
+        newPokemon.push(availablePokemon[randomIndex]);
+        newPokemonNames.push(availablePokemon[randomIndex].name);
       }
     }
     res.status(200).json({ data: newPokemon });
