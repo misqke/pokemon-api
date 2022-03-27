@@ -1,4 +1,4 @@
-const pokemon = require("./pokemon.json");
+const pokemon = require("../pokemon.json");
 
 const getSinglePokemon = (req, res) => {
   const num = Number(req.query.num) || 1;
@@ -17,7 +17,7 @@ const advancedSearchPokemon = (req, res) => {
   const maxNum = Number(req.body.maxNum) || pokemon.length;
   const page = Number(req.query.page) || 1;
   const sortBy = req.query.sort || "01";
-  const limit = 12;
+  const limit = Number(req.query.limit) || 12;
   const skip = (page - 1) * limit;
   try {
     let data = pokemon;
@@ -177,30 +177,4 @@ const advancedSearchPokemon = (req, res) => {
   }
 };
 
-const randomPokemon = (req, res) => {
-  const currentPokemon = req.body.pokemon;
-  const limit = req.query.limit || 12;
-  const minNum = Number(req.query.minNum) || 1;
-  const maxNum = Number(req.query.maxNum) || 898;
-  try {
-    const availablePokemon = pokemon.slice(minNum - 1, maxNum);
-    const newPokemon = [];
-    const newPokemonNames = [];
-    while (newPokemon.length < limit) {
-      const randomIndex = Math.floor(Math.random() * availablePokemon.length);
-      if (
-        !currentPokemon.includes(availablePokemon[randomIndex].name) &&
-        !newPokemonNames.includes(availablePokemon[randomIndex].name)
-      ) {
-        newPokemon.push(availablePokemon[randomIndex]);
-        newPokemonNames.push(availablePokemon[randomIndex].name);
-      }
-    }
-    res.status(200).json({ data: newPokemon });
-  } catch (error) {
-    console.log(error);
-    res.json(error);
-  }
-};
-
-module.exports = { getSinglePokemon, advancedSearchPokemon, randomPokemon };
+module.exports = { getSinglePokemon, advancedSearchPokemon };

@@ -1,11 +1,9 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const {
-  getSinglePokemon,
-  advancedSearchPokemon,
-  randomPokemon,
-} = require("./pokemonController");
+
+const searchRouter = require("./routes/searchRouter");
+const randomRouter = require("./routes/randomRouter");
 
 const app = express();
 
@@ -14,9 +12,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
-app.get("/api", getSinglePokemon);
-app.post("/api", advancedSearchPokemon);
-app.post("/api/random", randomPokemon);
+app.use("/api/search", searchRouter);
+app.use("/api/random", randomRouter);
 
 const port = process.env.PORT || 8000;
 
