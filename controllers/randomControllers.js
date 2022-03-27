@@ -1,21 +1,20 @@
 const pokemon = require("../pokemon.json");
 
 const randomPokemon = (req, res) => {
-  const currentPokemon = req.body.pokemon;
+  const currentPokemon = req.body.pokemon || [];
   const limit = Number(req.query.limit) || 12;
 
   try {
-    const availablePokemon = pokemon.slice(minNum - 1, maxNum);
     const newPokemon = [];
     const newPokemonNames = [];
     while (newPokemon.length < limit) {
-      const randomIndex = Math.floor(Math.random() * availablePokemon.length);
+      const randomIndex = Math.floor(Math.random() * pokemon.length);
       if (
-        !currentPokemon.includes(availablePokemon[randomIndex].name) &&
-        !newPokemonNames.includes(availablePokemon[randomIndex].name)
+        !currentPokemon.includes(pokemon[randomIndex].name) &&
+        !newPokemonNames.includes(pokemon[randomIndex].name)
       ) {
-        newPokemon.push(availablePokemon[randomIndex]);
-        newPokemonNames.push(availablePokemon[randomIndex].name);
+        newPokemon.push(pokemon[randomIndex]);
+        newPokemonNames.push(pokemon[randomIndex].name);
       }
     }
     res.status(200).json({ data: newPokemon });
