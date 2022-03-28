@@ -35,7 +35,14 @@ const whosThatPokemon = (req, res) => {
       const randomNumbers = [];
       while (randomNumbers.length < 4) {
         const randIndex = Math.floor(Math.random() * pokemonList.length);
-        if (!randomNumbers.includes(randIndex)) {
+        if (randomNumbers.length === 0) {
+          const usedPokemon = randomPokemon.map(
+            (question) => question.answer.name
+          );
+          if (!usedPokemon.includes(pokemonList[randIndex].name)) {
+            randomNumbers.push(randIndex);
+          }
+        } else if (!randomNumbers.includes(randIndex)) {
           randomNumbers.push(randIndex);
         }
       }
