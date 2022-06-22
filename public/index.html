@@ -5,9 +5,95 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>pokemon api</title>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <h1>Pokemon API</h1>
     <p>An api for basic pokemon data.</p>
+    <div class="box">
+      <h2>Base URL</h2>
+      <p>https://misqke-pokemon-api.herokuapp.com/api/</p>
+    </div>
+    <div class="box">
+      <h2>Routes</h2>
+      <ul>
+        <li>search</li>
+        <li>random</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Search Route</h3>
+      <h4>Get Requests</h4>
+      <p>
+        returns a data object of a single pokemon whos number matches the num
+        query.
+      </p>
+      <table>
+        <tr>
+          <th>query</th>
+          <th>type</th>
+          <th>default</th>
+          <th>desc.</th>
+        </tr>
+        <tr>
+          <td>num</td>
+          <td>number</td>
+          <td>1</td>
+          <td>number of requested pokemon</td>
+        </tr>
+      </table>
+
+      <h4>Post Requests</h4>
+      <p>
+        returns data object containing keys for "pages" (number) and "pokemon"
+        (list of pokemon objects)
+      </p>
+      <table>
+        <tr>
+          <th>query</th>
+          <th>type</th>
+          <th>default</th>
+          <th>desc.</th>
+        </tr>
+        <tr>
+          <td>minNum</td>
+          <td>number</td>
+          <td>1</td>
+          <td>lowest pokemon number to include</td>
+        </tr>
+        <tr>
+          <td>maxNum</td>
+          <td>number</td>
+          <td>898</td>
+          <td>highest pokemon number to include</td>
+        </tr>
+        <tr>
+          <td>page</td>
+          <td>number</td>
+          <td>1</td>
+          <td>desired page number to return</td>
+        </tr>
+        <tr>
+          <td>limit</td>
+          <td>number</td>
+          <td>12</td>
+          <td>number of pokemon to return</td>
+        </tr>
+        <tr>
+          <td>sortBy</td>
+          <td>string</td>
+          <td>01</td>
+          <td>
+            how to sort data:
+            <ul>
+              <li>"01" - lowest number to highest</li>
+              <li>"10" - highest number to lowest</li>
+              <li>"az" - alphabetical a to z</li>
+              <li>"za" - alphabetical reverse, z to a</li>
+            </ul>
+          </td>
+        </tr>
+      </table>
+    </div>
   </body>
 </html>

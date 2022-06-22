@@ -1,0 +1,22 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  padding: 1rem;
+}
+
+.box {
+  margin: 1rem;
+}
+
+table * {
+  border: 1px solid black;
+}
+th,
+td {
+  padding: 8;
+  text-align: center;
+}
